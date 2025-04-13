@@ -22,7 +22,7 @@ class StatisticTimer
 	StatisticTimer(string name);
 	void start(string label);
 	chrono::system_clock::duration stop(string label);
-	string toString();
+	string toString(bool summary = false);
 	json toJson();
 
   private:

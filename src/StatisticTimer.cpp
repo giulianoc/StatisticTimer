@@ -37,7 +37,7 @@ chrono::system_clock::duration StatisticTimer::stop(string label)
 	return d;
 }
 
-string StatisticTimer::toString()
+string StatisticTimer::toString(bool summary)
 {
 	if (_uncompletedTimers.size() > 0)
 		SPDLOG_WARN(
@@ -49,17 +49,24 @@ string StatisticTimer::toString()
 			)
 		);
 
-	string log;
+	ostringstream oss;
+	bool ossEmpty = true;
+	long totalElapsed = 0;
 	for (tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string> timer : _timers)
 	{
 		auto [start, stop, label] = timer;
-		if (log != "")
-			log += ", ";
-		log += std::format("{}: {}", label, chrono::duration_cast<chrono::milliseconds>(stop - start).count());
-	}
-	log = std::format("statistics ({}): {}", _name, log);
 
-	return log;
+		if (summary)
+			totalElapsed += chrono::duration_cast<chrono::milliseconds>(stop - start).count();
+		else
+			oss << std::format("{}{}: {}", ossEmpty ? "" : ", ", label, chrono::duration_cast<chrono::milliseconds>(stop - start).count());
+		ossEmpty = false;
+	}
+
+	if (summary)
+		return std::format("statistics ({}): {}", _name, totalElapsed);
+	else
+		return std::format("statistics ({}): {}", _name, oss.str());
 }
 
 json StatisticTimer::toJson()
