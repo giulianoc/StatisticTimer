@@ -33,6 +33,12 @@ include_directories("${SPDLOG_INCLUDE_DIR}")
 
 add_library (StatisticTimer SHARED ${SOURCES} ${HEADERS})
 
-install (TARGETS StatisticTimer DESTINATION lib)
-install (FILES ${HEADERS} DESTINATION include)
+if(ZORAC)
+	install (TARGETS StatisticTimer DESTINATION services/cms-import)
+	install (TARGETS StatisticTimer DESTINATION services/cms-pusher)
+	install (TARGETS StatisticTimer DESTINATION services/cms-getter)
+else()
+	install (TARGETS StatisticTimer DESTINATION lib)
+	install (FILES ${HEADERS} DESTINATION include)
+endif()
 
