@@ -1,6 +1,5 @@
 
-#ifndef StatisticTimer_h
-#define StatisticTimer_h
+#pragma once
 
 #include <chrono>
 #include <map>
@@ -19,7 +18,7 @@ class StatisticTimer
 {
 
   public:
-	StatisticTimer(string name);
+	explicit StatisticTimer(const string &name);
 	void start(string label);
 	chrono::system_clock::duration stop(string label);
 	string toString(bool summary = false);
@@ -32,5 +31,3 @@ class StatisticTimer
 
 	vector<tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string>> _timers;
 };
-
-#endif

@@ -4,7 +4,7 @@
 #include <chrono>
 #include <numeric>
 
-StatisticTimer::StatisticTimer(string name) { _name = name; }
+StatisticTimer::StatisticTimer(const string &name) { _name = name; }
 
 void StatisticTimer::start(string label)
 {
@@ -30,7 +30,7 @@ chrono::system_clock::duration StatisticTimer::stop(string label)
 		chrono::system_clock::time_point start = it->second;
 		chrono::system_clock::time_point end = chrono::system_clock::now();
 		d = end - start;
-		_timers.push_back(make_tuple(start, end, label));
+		_timers.emplace_back(start, end, label);
 		_uncompletedTimers.erase(it);
 	}
 
@@ -39,20 +39,20 @@ chrono::system_clock::duration StatisticTimer::stop(string label)
 
 string StatisticTimer::toString(bool summary)
 {
-	if (_uncompletedTimers.size() > 0)
+	if (!_uncompletedTimers.empty())
 		SPDLOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
 			accumulate(
 				begin(_uncompletedTimers), end(_uncompletedTimers), string(),
 				[](const string &s, pair<string, chrono::system_clock::time_point> timer)
-				{ return (s == "" ? timer.first : (s + ", " + timer.first)); }
+				{ return (s.empty() ? timer.first : (s + ", " + timer.first)); }
 			)
 		);
 
 	ostringstream oss;
 	bool ossEmpty = true;
 	long totalElapsed = 0;
-	for (tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string> timer : _timers)
+	for (const tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string>& timer : _timers)
 	{
 		auto [start, stop, label] = timer;
 
@@ -71,7 +71,7 @@ string StatisticTimer::toString(bool summary)
 
 json StatisticTimer::toJson()
 {
-	if (_uncompletedTimers.size() > 0)
+	if (!_uncompletedTimers.empty())
 		SPDLOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
 			accumulate(
@@ -82,7 +82,7 @@ json StatisticTimer::toJson()
 		);
 
 	json statisticsRoot = json::array();
-	for (tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string> timer : _timers)
+	for (const tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string>& timer : _timers)
 	{
 		auto [start, stop, label] = timer;
 
