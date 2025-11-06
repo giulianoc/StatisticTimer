@@ -4,9 +4,7 @@
 #include <chrono>
 #include <numeric>
 
-StatisticTimer::StatisticTimer(const string &name) { _name = name; }
-
-void StatisticTimer::start(string label)
+void StatisticTimer::start(const string& label)
 {
 	auto it = _uncompletedTimers.find(label);
 	if (it != _uncompletedTimers.end())
@@ -18,7 +16,7 @@ void StatisticTimer::start(string label)
 		_uncompletedTimers.insert(make_pair(label, chrono::system_clock::now()));
 }
 
-chrono::system_clock::duration StatisticTimer::stop(string label)
+chrono::system_clock::duration StatisticTimer::stop(const string& label)
 {
 	chrono::system_clock::duration d(0);
 

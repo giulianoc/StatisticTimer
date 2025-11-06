@@ -18,9 +18,12 @@ class StatisticTimer
 {
 
   public:
-	explicit StatisticTimer(const string &name);
-	void start(string label);
-	chrono::system_clock::duration stop(string label);
+	StatisticTimer()= default;
+	explicit StatisticTimer(const string_view &name) { _name = name; }
+	~StatisticTimer()= default;
+	void setName(const string_view &name) { if (_name.empty()) _name = name; }
+	void start(const string& label);
+	chrono::system_clock::duration stop(const string& label);
 	string toString(bool summary = false);
 	json toJson();
 
