@@ -8,29 +8,29 @@
 
 #include "nlohmann/json.hpp"
 
+/*
 using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
 using namespace nlohmann::literals;
-
-using namespace std;
+*/
 
 class StatisticTimer
 {
 
   public:
 	StatisticTimer()= default;
-	explicit StatisticTimer(const string_view &name) { _name = name; }
+	explicit StatisticTimer(const std::string_view &name) { _name = name; }
 	~StatisticTimer()= default;
-	void setName(const string_view &name) { if (_name.empty()) _name = name; }
-	void start(const string& label);
-	chrono::system_clock::duration stop(const string& label);
-	string toString(bool summary = false);
-	json toJson();
+	void setName(const std::string_view &name) { if (_name.empty()) _name = name; }
+	void start(const std::string& label);
+	std::chrono::system_clock::duration stop(const std::string& label);
+	std::string toString(bool summary = false);
+	nlohmann::json toJson();
 
   private:
-	string _name;
+	std::string _name;
 
-	map<string, chrono::system_clock::time_point> _uncompletedTimers;
+	std::map<std::string, std::chrono::system_clock::time_point> _uncompletedTimers;
 
-	vector<tuple<chrono::system_clock::time_point, chrono::system_clock::time_point, string>> _timers;
+	std::vector<std::tuple<std::chrono::system_clock::time_point, std::chrono::system_clock::time_point, std::string>> _timers;
 };

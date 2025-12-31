@@ -4,6 +4,10 @@
 #include <chrono>
 #include <numeric>
 
+using namespace std;
+using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
+
 void StatisticTimer::start(const string& label)
 {
 	auto it = _uncompletedTimers.find(label);
