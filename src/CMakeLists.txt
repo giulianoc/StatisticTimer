@@ -30,8 +30,14 @@ SET (HEADERS
 
 include_directories("${NLOHMANN_INCLUDE_DIR}")
 include_directories("${SPDLOG_INCLUDE_DIR}")
+include_directories("${THREADLOGGER_INCLUDE_DIR}")
 
 add_library (StatisticTimer SHARED ${SOURCES} ${HEADERS})
+
+if(APPLE)
+	link_directories(${THREADLOGGER_LIBRARY_DIR})
+	target_link_libraries(StatisticTimer ThreadLogger)
+endif()
 
 if(ZORAC)
 	install (TARGETS StatisticTimer DESTINATION services/cms-import)

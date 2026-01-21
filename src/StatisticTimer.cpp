@@ -1,6 +1,6 @@
 
 #include "StatisticTimer.h"
-#include "spdlog/spdlog.h"
+#include "ThreadLogger.h"
 #include <chrono>
 #include <numeric>
 
@@ -12,7 +12,7 @@ void StatisticTimer::start(const string& label)
 	auto it = _uncompletedTimers.find(label);
 	if (it != _uncompletedTimers.end())
 	{
-		SPDLOG_WARN("StatisticTimer ({}): the label ({}) is already present, we will update the time", _name, label);
+		LOG_WARN("StatisticTimer ({}): the label ({}) is already present, we will update the time", _name, label);
 		it->second = chrono::system_clock::now();
 	}
 	else
@@ -25,7 +25,7 @@ chrono::system_clock::duration StatisticTimer::stop(const string& label)
 
 	auto it = _uncompletedTimers.find(label);
 	if (it == _uncompletedTimers.end())
-		SPDLOG_WARN("StatisticTimer ({}): stop cannot be done because the label ({}) is not present", _name, label);
+		LOG_WARN("StatisticTimer ({}): stop cannot be done because the label ({}) is not present", _name, label);
 	else
 	{
 		chrono::system_clock::time_point start = it->second;
@@ -41,7 +41,7 @@ chrono::system_clock::duration StatisticTimer::stop(const string& label)
 string StatisticTimer::toString(bool summary)
 {
 	if (!_uncompletedTimers.empty())
-		SPDLOG_WARN(
+		LOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
 			accumulate(
 				begin(_uncompletedTimers), end(_uncompletedTimers), string(),
@@ -73,7 +73,7 @@ string StatisticTimer::toString(bool summary)
 json StatisticTimer::toJson()
 {
 	if (!_uncompletedTimers.empty())
-		SPDLOG_WARN(
+		LOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
 			accumulate(
 				begin(_uncompletedTimers), end(_uncompletedTimers), string(),
