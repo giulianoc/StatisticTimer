@@ -3,6 +3,7 @@
 #include "ThreadLogger.h"
 #include <chrono>
 #include <numeric>
+#include <spdlog/fmt/bundled/ranges.h>
 
 using namespace std;
 using json = nlohmann::json;
@@ -43,11 +44,7 @@ string StatisticTimer::toString(bool summary)
 	if (!_uncompletedTimers.empty())
 		LOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
-			accumulate(
-				begin(_uncompletedTimers), end(_uncompletedTimers), string(),
-				[](const string &s, pair<string, chrono::system_clock::time_point> timer)
-				{ return (s.empty() ? timer.first : (s + ", " + timer.first)); }
-			)
+			fmt::join(_uncompletedTimers | std::views::keys, ", ")
 		);
 
 	ostringstream oss;
@@ -75,11 +72,7 @@ json StatisticTimer::toJson()
 	if (!_uncompletedTimers.empty())
 		LOG_WARN(
 			"StatisticTimer ({}) has {} timers not stopped: {}", _name, _uncompletedTimers.size(),
-			accumulate(
-				begin(_uncompletedTimers), end(_uncompletedTimers), string(),
-				[](const string &s, pair<string, chrono::system_clock::time_point> timer)
-				{ return (s == "" ? timer.first : (s + ", " + timer.first)); }
-			)
+			fmt::join(_uncompletedTimers | std::views::keys, ", ")
 		);
 
 	json statisticsRoot = json::array();
