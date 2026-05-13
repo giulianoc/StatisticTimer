@@ -10,8 +10,7 @@ using json = nlohmann::json;
 
 void StatisticTimer::start(const string& label)
 {
-	auto it = _uncompletedTimers.find(label);
-	if (it != _uncompletedTimers.end())
+	if (const auto it = _uncompletedTimers.find(label); it != _uncompletedTimers.end())
 	{
 		LOG_WARN("StatisticTimer ({}): the label ({}) is already present, we will update the time", _name, label);
 		it->second = chrono::system_clock::now();
@@ -24,8 +23,7 @@ chrono::system_clock::duration StatisticTimer::stop(const string& label)
 {
 	chrono::system_clock::duration d(0);
 
-	auto it = _uncompletedTimers.find(label);
-	if (it == _uncompletedTimers.end())
+	if (const auto it = _uncompletedTimers.find(label); it == _uncompletedTimers.end())
 		LOG_WARN("StatisticTimer ({}): stop cannot be done because the label ({}) is not present", _name, label);
 	else
 	{
@@ -39,7 +37,7 @@ chrono::system_clock::duration StatisticTimer::stop(const string& label)
 	return d;
 }
 
-string StatisticTimer::toString(bool summary)
+string StatisticTimer::toString(const bool summary)
 {
 	if (!_uncompletedTimers.empty())
 		LOG_WARN(
@@ -63,8 +61,7 @@ string StatisticTimer::toString(bool summary)
 
 	if (summary)
 		return std::format("statistics ({}): {}", _name, totalElapsed);
-	else
-		return std::format("statistics ({}): {}", _name, oss.str());
+	return std::format("statistics ({}): {}", _name, oss.str());
 }
 
 json StatisticTimer::toJson()
@@ -80,7 +77,8 @@ json StatisticTimer::toJson()
 	{
 		auto [start, stop, label] = timer;
 
-		statisticsRoot.push_back(std::format("{}: {} millisecs", label, chrono::duration_cast<chrono::milliseconds>(stop - start).count()));
+		// statisticsRoot.push_back(std::format("{}: {} millisecs", label, chrono::duration_cast<chrono::milliseconds>(stop - start).count()));
+		statisticsRoot.push_back(std::format("{}: {:.1f} millisecs", label, chrono::duration<double, std::milli>(stop - start).count()));
 	}
 
 	json root;
