@@ -78,7 +78,7 @@ json StatisticTimer::toJson()
 		auto [start, stop, label] = timer;
 
 		// statisticsRoot.push_back(std::format("{}: {} millisecs", label, chrono::duration_cast<chrono::milliseconds>(stop - start).count()));
-		statisticsRoot.push_back(std::format("{}: {:.1f} millisecs", label, chrono::duration<double, std::milli>(stop - start).count()));
+		statisticsRoot.push_back(std::format("{}: {:.3f} millisecs", label, chrono::duration<double, std::milli>(stop - start).count()));
 	}
 
 	json root;
