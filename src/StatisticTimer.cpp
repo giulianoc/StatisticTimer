@@ -37,6 +37,16 @@ chrono::system_clock::duration StatisticTimer::stop(const string& label)
 	return d;
 }
 
+void StatisticTimer::stopAll()
+{
+	auto end = std::chrono::system_clock::now();
+
+	for (const auto& [label, start] : _uncompletedTimers)
+		_timers.emplace_back(start, end, label);
+
+	_uncompletedTimers.clear();
+}
+
 string StatisticTimer::toString(const bool summary)
 {
 	if (!_uncompletedTimers.empty())

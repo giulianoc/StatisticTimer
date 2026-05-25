@@ -18,6 +18,7 @@ class StatisticTimer
 	void setName(const std::string_view &name) { if (_name.empty()) _name = name; }
 	void start(const std::string& label);
 	std::chrono::system_clock::duration stop(const std::string& label);
+	void stopAll();
 	std::string toString(bool summary = false);
 	nlohmann::json toJson();
 
